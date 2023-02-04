@@ -12,7 +12,7 @@ if len(tools) == 0:
     exit()
 
 print("available_tools: ", ",".join([x.get_name() for x in tools]))
-tool = tools[0]
+tool = tools[1]
 
 
 langs = tool.get_available_languages()
@@ -23,7 +23,7 @@ if len(langs) == 0:
 
 print("available_langages: ", ",".join(langs))
 # tgt_lang  = langs[0]
-tgt_lang = "jpn"
+tgt_lang = "Japanese_vert"
 
 pyocr_txt_builder = pyocr.builders.TextBuilder()
 pyocr_wb_builder = pyocr.builders.WordBoxBuilder()
@@ -31,8 +31,8 @@ pyocr_lb_builder = pyocr.builders.LineBoxBuilder()
 pyocr_dg_builder = pyocr.builders.DigitBuilder()
 
 
-srcImg = Image.open('48.png')
-dstImg = Image.open('48.png')
+srcImg = Image.open('801496_R0000055.jpg')
+dstImg = Image.open('801496_R0000055.jpg')
 draw = ImageDraw.Draw(dstImg)
 
 
