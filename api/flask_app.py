@@ -3,36 +3,13 @@
 Returns:
     _type_: _description_
 """
-import json
+import tempfile
 from PIL import Image
-from flask import Flask, request, make_response, Response, jsonify
-
+from flask import Flask, request, Response
+from api.api_helper import create_result, format_ocr_results
 from src.models import models, builders
 
 app = Flask(__name__)
-
-
-def create_result(result: any, message: str = "", status: int = 500) -> Response:
-    """_summary_
-
-    Args:
-        result (bool): _description_
-
-    Returns:
-        Response: _description_
-    """
-
-    try:
-        ret = {
-            "result": result,
-            "message": message
-        }
-        response = make_response(json.dumps(ret), status)
-    except Exception as ex:
-        response = make_response(json.dumps(
-            {"result": False, "message": f"{ex}"}), 400)
-    else:
-        return response
 
 
 @app.route("/")
@@ -122,15 +99,21 @@ def ocr() -> Response:
 
     # validate images
     # change image formats
-    if src_image.content_type == "image/png":
-        # if req_model_name == "pyocr.lbtesseract":
-        #     validated_src_image = Image.open(io.BytesIO(src_image))
-
-        validated_src_image = Image.open(src_image)
-    elif src_image.content_type == "image/jpg":
-        validated_src_image = Image.open(src_image)
+    try:
+        src_img = Image.open(src_image)
+        if src_image.content_type == "image/png" and req_model_name == "pyocr.libtesseract":
+            # libtesseract doesn't accept image/png or converted PIL('RGB') format,
+            # save it as a temporary jpeg file and read it once more.
+            src_img = src_img.convert('RGB')
+            fp = tempfile.TemporaryDirectory()
+            tmpfile_name = fp.name + "/tmp.jpg"
+            src_img.save(tmpfile_name)
+            src_img = Image.open(tmpfile_name)
+    except Exception as ex:
+        return create_result(result=False, message=f"image acquisition error: {ex}", status=400)
     else:
-        return create_result(result=False, message=f"unavailable image file format.: {ex}", status=400)
+        validated_src_image = src_img
+
 
     model = models[req_model_name]["tool"]
     builder = builders[req_builder]
@@ -145,23 +128,6 @@ def ocr() -> Response:
         )
     except Exception as ex:
         return create_result(result=False, message=f"OCR process error: {ex}", status=500)
-
-    def format_ocr_results(ocr_results, builder) -> dict:
-        contents = ""
-        boxes = []
-        for item in ocr_results:
-            contents += item.content
-            boxes.append(
-                {
-                    "content": item.content,
-                    "posistion" : item.position
-                }
-            )
-
-        return {
-            "contents" : contents,
-            "boxes" : boxes
-        }
 
     # format OCR results
     try:
