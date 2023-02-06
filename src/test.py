@@ -1,5 +1,4 @@
 from PIL import Image, ImageDraw
-import sys
 
 import pyocr
 import pyocr.builders
