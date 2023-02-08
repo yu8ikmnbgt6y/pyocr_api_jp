@@ -1,0 +1,8 @@
+services:
+  pyocr_api_jp:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8000"
+

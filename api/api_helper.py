@@ -7,13 +7,13 @@ import json
 from flask import make_response, Response
 
 
-def create_result(result: any, message: str = "", status: int = 500) -> Response:
+def create_result(result: any, status: int, message: str = "") -> Response:
     """_summary_
 
     Args:
         result (any): _description_
+        status (int, optional): _description_.
         message (str, optional): _description_. Defaults to "".
-        status (int, optional): _description_. Defaults to 500.
 
     Returns:
         Response: _description_
@@ -39,8 +39,11 @@ def create_result(result: any, message: str = "", status: int = 500) -> Response
         return response
 
 
-def format_ocr_results(ocr_results, builder) -> dict:
-    """_summary_
+def format_ocr_results(ocr_results, builder_type) -> dict:
+    """
+    builderごとに出力内容が変わることがあるのでここでJSONにできるように吸収する
+    一旦はword_box,line_boxの場合のみ実装
+    
 
     Args:
         ocr_results (_type_): _description_
@@ -49,6 +52,10 @@ def format_ocr_results(ocr_results, builder) -> dict:
     Returns:
         dict: _description_
     """
+    if builder_type not in ["word_box", "line_box"]:
+        NotImplementedError("Only word_box and line_box are implemented.")
+
+
     contents = ""
     boxes = []
     for item in ocr_results:

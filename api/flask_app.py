@@ -19,7 +19,7 @@ def hello() -> Response:
     Returns:
         Response: _description_
     """
-    return create_result(result=True, message="this_is_pyocr_api")
+    return create_result(result=True, message="this_is_pyocr_api", status=200)
 
 
 @app.route("/available_models", methods=["GET"])
@@ -30,7 +30,7 @@ def get_available_models() -> Response:
         Response: List[str] Names of the available models
     """
     model_names = list(models.keys())
-    return create_result(result=model_names)
+    return create_result(result=model_names, status=200)
 
 
 @app.route("/available_language/<model_name>", methods=["GET"])
@@ -131,7 +131,7 @@ def ocr() -> Response:
 
     # format OCR results
     try:
-        formatted_results = format_ocr_results(ocr_results, builder)
+        formatted_results = format_ocr_results(ocr_results, req_builder)
     except NotImplementedError as ex:
         return create_result(result=False, message=f"{ex}", status=422)
 
