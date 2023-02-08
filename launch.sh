@@ -1,3 +1,4 @@
 #/bin/sh
 
-uwsgi --http :8000 --wsgi-file main.py
+# python main.py
+uwsgi --http=:8000 --wsgi-file=main.py --callable=app

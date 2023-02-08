@@ -1,0 +1,14 @@
+**/*.pyc
+**/*.pyc
+**/*.pyo
+**/*.egg-info/
+**/*.egg-info/
+**/*.egg
+
+dist/
+build/
+.eggs/
+
+**/test/
+**/tmp/
+**/__pycache__/
