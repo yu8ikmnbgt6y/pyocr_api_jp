@@ -140,3 +140,9 @@ def ocr() -> Response:
         message=parameters,
         status=200
     )
+
+
+@app.after_request
+def add_header(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
