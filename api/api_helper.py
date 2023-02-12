@@ -63,7 +63,7 @@ def format_ocr_results(ocr_results, builder_type) -> dict:
         boxes.append(
             {
                 "content": item.content,
-                "posistion" : item.position
+                "position" : item.position
             }
         )
 
